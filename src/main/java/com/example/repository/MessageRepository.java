@@ -11,7 +11,7 @@ import com.example.entity.Account;
 import com.example.entity.Message;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Long> {
+public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-    Optional<List<Message>> findByPosted_by(long posted_by);
+    Optional<List<Message>> findByPostedBy(int posted_by);
 }

@@ -18,15 +18,6 @@ import com.example.service.MessageService;
  */
 @RestController
 public class SocialMediaController {
-    /*app.get("example-endpoint", this::exampleHandler);
-    app.post("/register", this::postRegistrationHandler);
-    app.post("/login", this::postLoginHandler);
-    app.post("/messages", this::postMessageHandler);
-    app.get("/messages", this::getAllMessagesHandler);
-    app.get("/messages/{message_id}", this::getMessageByIdHandler);
-    app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
-    app.patch("/messages/{message_id}", this::patchUpdateMessageHandler);
-    app.get("/accounts/{account_id}/messages", this::getAllMessagesFromUserHandler);*/
 
     private AccountService accountService;
     private MessageService messageService;
@@ -54,7 +45,7 @@ public class SocialMediaController {
     @PostMapping("/login")
     public ResponseEntity<Account> loginAccount(@RequestBody Account account){
         Optional<Account> tempAccount = accountService.login(account);
-        if(tempAccount.isPresent()){
+        if(!tempAccount.isPresent()){
             return ResponseEntity.status(401).body(null);
         } else {
             return ResponseEntity.status(200).body(tempAccount.get());
@@ -64,7 +55,7 @@ public class SocialMediaController {
     @PostMapping("/messages")
     public ResponseEntity<Message> postMessage(@RequestBody Message message){
         Message tempMessage = messageService.addMessage(message);
-        if(tempMessage.equals(null)){
+        if(tempMessage == null){
             return ResponseEntity.status(400).body(null);
         } else {
             return ResponseEntity.status(200).body(tempMessage);
@@ -77,28 +68,32 @@ public class SocialMediaController {
     }
 
     @GetMapping("/messages/{message_id}")
-    public ResponseEntity<Message> getMessageById(@PathVariable long message_id){
+    public ResponseEntity<Message> getMessageById(@PathVariable int message_id){
         return ResponseEntity.status(200).body(messageService.getMessageById(message_id));
     }
 
     @DeleteMapping("/messages/{message_id}")
-    public ResponseEntity<Integer> deleteMessage(@PathVariable long message_id){
-        return ResponseEntity.status(200).body(messageService.deleteMessage(message_id));
-    }
-
-    @PatchMapping("/messages/{message_id}")
-    public ResponseEntity<Integer> updateMessage(@PathVariable long message_id, @RequestBody Message message){
-        Message tempMessage = messageService.updateMessage(message_id, message);
-        if(tempMessage.equals(null)){
-            return ResponseEntity.status(400).body(0);
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int message_id){
+        Message tempMessage = messageService.deleteMessage(message_id);
+        if(tempMessage == null){
+            return ResponseEntity.status(200).body(null);
         } else {
             return ResponseEntity.status(200).body(1);
         }
-        //return ResponseEntity.status(200).body(messageService.deleteMessage(message_id));
+    }
+
+    @PatchMapping("/messages/{message_id}")
+    public ResponseEntity<Integer> updateMessage(@PathVariable int message_id, @RequestBody Message message){
+        Message tempMessage = messageService.updateMessage(message_id, message);
+        if(tempMessage == null){
+            return ResponseEntity.status(400).body(null);
+        } else {
+            return ResponseEntity.status(200).body(1);
+        }
     }
 
     @GetMapping("/accounts/{account_id}/messages")
-    public ResponseEntity<List<Message>> getAllMessagesByUser(@PathVariable long account_id){
+    public ResponseEntity<List<Message>> getAllMessagesByUser(@PathVariable int account_id){
         return ResponseEntity.status(200).body(messageService.getAllMessagesByUser(account_id));
     }
 }

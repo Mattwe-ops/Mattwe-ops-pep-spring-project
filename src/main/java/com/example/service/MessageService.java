@@ -21,7 +21,7 @@ public class MessageService {
     }
 
     public Message addMessage(Message message){
-        Optional<Account> tempAccount = accountRepository.findById((long)message.getPostedBy());
+        Optional<Account> tempAccount = accountRepository.findById(message.getPostedBy());
         if(!tempAccount.isPresent()){
             return null;
         } else if(message.getMessageText().isEmpty()){
@@ -37,21 +37,25 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
-    public Message getMessageById(long message_id){
-        return messageRepository.findById(message_id).get();
-    }
-
-    public int deleteMessage(long message_id){
+    public Message getMessageById(int message_id){
         Optional<Message> tempMessage = messageRepository.findById(message_id);
         if(tempMessage.isPresent()){
-            messageRepository.deleteById(message_id);
-            return 1;
+            return tempMessage.get();
         } else {
-            return 0;
+            return null;
         }
     }
 
-    public Message updateMessage(long message_id, Message message){
+    public Message deleteMessage(int message_id){
+        Optional<Message> tempMessage = messageRepository.findById(message_id);
+        if(tempMessage.isPresent()){
+            return tempMessage.get();
+        } else {
+            return null;
+        }
+    }
+
+    public Message updateMessage(int message_id, Message message){
         Optional<Message> tempMessage = messageRepository.findById(message_id);
         if(!tempMessage.isPresent()){
             return null;
@@ -65,7 +69,7 @@ public class MessageService {
         }
     }
 
-    public List<Message> getAllMessagesByUser(long account_id){
-        return messageRepository.findByPosted_by(account_id).get();
+    public List<Message> getAllMessagesByUser(int account_id){
+        return messageRepository.findByPostedBy(account_id).get();
     }
 }
